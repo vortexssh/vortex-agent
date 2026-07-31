@@ -1,0 +1,25 @@
+# Binaries
+/vortex-agent
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test / coverage
+*.test
+*.out
+coverage.html
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Env / secrets
+.env
+.env.*
+!.env.example

@@ -1,0 +1,22 @@
+[Unit]
+Description=Vortex Agent — outbound tunnel to Vortex Core
+Documentation=https://github.com/vortexssh/vortex-agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=-/etc/vortex-agent.env
+ExecStart=/usr/local/bin/vortex-agent
+Restart=always
+RestartSec=2
+# Outbound-only: no ListenStream / socket activation.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadWritePaths=/var/log
+
+[Install]
+WantedBy=multi-user.target
