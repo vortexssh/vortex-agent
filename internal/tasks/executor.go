@@ -9,7 +9,6 @@ import (
 	"log/slog"
 	"os/exec"
 	"sync"
-	"syscall"
 	"time"
 
 	"vortex-agent/internal/config"
@@ -101,7 +100,7 @@ func (e *Executor) run(ctx context.Context, taskID, command string) protocol.Tas
 
 	shell, args := resolveShell(command)
 	cmd := exec.CommandContext(ctx, shell, args...)
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	configureCmd(cmd)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &limitedWriter{limit: maxOutputBytes, buf: &stdout}
@@ -151,13 +150,6 @@ func resolveShell(command string) (string, []string) {
 		return path, []string{"-c", command}
 	}
 	return "/bin/sh", []string{"-c", command}
-}
-
-func killProcessGroup(cmd *exec.Cmd) {
-	if cmd.Process == nil {
-		return
-	}
-	_ = syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
 }
 
 type limitedWriter struct {

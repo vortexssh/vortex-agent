@@ -14,11 +14,18 @@
 
 ### Через Vortex Web (рекомендуется)
 
-1. Один раз соберите артефакты: `make cross` и выложите их на CDN (`VITE_AGENT_BINARY_BASE_URL` во Web).
-2. В панели: **Hosts → Install agent** — получите one-liner / `install.sh` с уже вшитыми `agent_id` + `secret`.
-3. На сервере: вставьте one-liner (`echo '…' | base64 -d | sudo bash`).
+Web только генерирует one-liner с секретами. Бинарник качается с CDN / GitHub Release
+(`VITE_AGENT_BINARY_BASE_URL`), не из образа Web.
 
-Бинарник общий; на каждый хост меняется только `/etc/vortex-agent.env`.
+1. Опубликуй linux-бинарники куда угодно по HTTPS:
+   ```bash
+   make cross-linux
+   gh release create v0.1.0 bin/vortex-agent-linux-amd64 bin/vortex-agent-linux-arm64
+   ```
+2. В Web `.env`: `VITE_AGENT_BINARY_BASE_URL=https://github.com/.../releases/download/v0.1.0`
+3. **Hosts → Install agent** → one-liner на сервере.
+
+Локально: `make publish-web` + Vite (dev fallback на `/agent`).
 
 ### Вручную
 

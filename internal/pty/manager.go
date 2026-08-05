@@ -4,6 +4,7 @@ package pty
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -86,7 +87,13 @@ func (m *Manager) HandleOpen(parent context.Context, raw []byte) {
 
 	shell := resolveShell()
 	cmd := exec.CommandContext(parent, shell)
-	cmd.Env = append(os.Environ(), "TERM=xterm-256color")
+	cmd.Env = append(
+		os.Environ(),
+		"TERM=xterm-256color",
+		"COLORTERM=truecolor",
+		fmt.Sprintf("COLUMNS=%d", cols),
+		fmt.Sprintf("LINES=%d", rows),
+	)
 
 	ptmx, err := creackpty.Start(cmd)
 	if err != nil {
